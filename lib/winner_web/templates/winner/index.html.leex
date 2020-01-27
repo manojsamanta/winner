@@ -1,0 +1,11 @@
+<div class="header">
+<form action="#" phx-submit="add_offer">
+  <%= text_input :offer, :next, placeholder: "What do like to offer?" %>
+  <%= submit "Add", phx_disable_with: "Adding..." %>
+</form>
+<%= for resources <- @resources do %>
+<p><b><font color=red><%= resources %></font></b></p>
+<% end %>
+</div>
+
+

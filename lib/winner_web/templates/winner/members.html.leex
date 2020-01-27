@@ -1,0 +1,24 @@
+<%=if @member_entered do %>
+
+  <div class="header">
+  <h4>Which raffles do you like to join?</h4>
+  <form action="#" phx-submit="add_member_resources">
+    <%= for resource <- @resources do %>
+    <input type="checkbox" name="<%= resource %>" value="<%= resource %>">
+    <b><font color=red><%= resource %></font></b><br>
+    <% end %>
+    <%= submit "Join", phx_disable_with: "Adding..." %>
+  </form>
+  </div>
+
+<%=else %>
+
+  <div class="header">
+  <form action="#" phx-submit="add_member">
+    <%= text_input :member, :next, placeholder: "Add your name" %>
+    <%= submit "Add", phx_disable_with: "Adding..." %>
+  </form>
+  </div>
+
+<% end %>
+
