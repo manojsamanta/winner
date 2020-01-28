@@ -30,7 +30,23 @@ defmodule WinnerWeb.WinnerResourcesLive do
   end
 
   def handle_info(:tick, socket) do
-    %{resources: resources, member_resources: member_resources}=RaffleState.list_resources()
+    %{
+       resources: resources, 
+       members: members,
+       member_resources: member_resources
+     } = RaffleState.list_resources()
+
+    matches =
+      for m <- resources do
+        for n <- members do
+          case Enum.member?(member_resources[n],m) do
+            true  -> n
+            false -> nil
+          end
+        end
+      end
+
+    IO.inspect matches
 
     socket=assign(socket, resources: resources)
     new_socket = schedule_tick(socket)

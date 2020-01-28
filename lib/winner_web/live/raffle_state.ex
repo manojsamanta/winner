@@ -6,8 +6,7 @@ defmodule WinnerWeb.RaffleState do
     {:ok, %{
           resources: [],
           members: [],
-          member_resources: %{},
-          resource_members: %{}
+          member_resources: %{}
       }
     }
   end
@@ -30,7 +29,7 @@ defmodule WinnerWeb.RaffleState do
         raffle_state | members: raffle_state.members++[member_name]
       }
 
-    {:reply, raffle_state, raffle_state}
+    {:reply, new_raffle_state, new_raffle_state}
   end
 
   def handle_call({:add_member_resources, member_name, resources}, _from, raffle_state) do

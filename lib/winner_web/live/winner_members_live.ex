@@ -41,8 +41,13 @@ defmodule WinnerWeb.WinnerMembersLive do
   end
 
   def handle_info(:tick, socket) do
-    %{resources: resources, member_resources: member_resources}=RaffleState.list_resources()
-    socket=assign(socket, resources: resources) 
+    %{
+       resources: resources, 
+       members: members,
+       member_resources: member_resources
+     }=RaffleState.list_resources()
+
+    socket=assign(socket, resources: resources, members: members)
     new_socket = schedule_tick(socket)
     {:noreply, new_socket}
   end
@@ -52,7 +57,7 @@ defmodule WinnerWeb.WinnerMembersLive do
   #
   def handle_event("add_member", path, socket) do
     new_member=path["member"]["next"]
-    if not Enum.member?(socket.assigns.resources, new_member) do
+    if not Enum.member?(socket.assigns.members, new_member) do
       RaffleState.add_member(new_member)
     end
     %{resources: resources}=RaffleState.list_resources()
