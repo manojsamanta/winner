@@ -6,7 +6,8 @@ defmodule WinnerWeb.RaffleState do
     {:ok, %{
           resources: [],
           members: [],
-          members_resources: %{}
+          member_resources: %{},
+          resource_members: %{}
       }
     }
   end
@@ -34,8 +35,8 @@ defmodule WinnerWeb.RaffleState do
 
   def handle_call({:add_member_resources, member_name, resources}, _from, raffle_state) do
 
-	IO.inspect resources
-      new_raffle_state=put_in(raffle_state, [:members_resources, member_name], resources)
+      new_raffle_state=put_in(raffle_state, [:member_resources, member_name], resources)
+
     {:reply, raffle_state, new_raffle_state}
   end
 
@@ -45,6 +46,7 @@ defmodule WinnerWeb.RaffleState do
   def handle_call(:list_resources, _from, raffle_state) do
     {:reply, raffle_state, raffle_state}
   end
+
 
   # Public API
   def start_link(_init \\ nil) do

@@ -3,8 +3,6 @@ defmodule WinnerWeb.WinnerResourcesLive do
 
   alias WinnerWeb.RaffleState
 
-  @resources []
-
   def render(assigns) do
     WinnerWeb.WinnerView.render("index.html", assigns)
   end
@@ -22,14 +20,8 @@ defmodule WinnerWeb.WinnerResourcesLive do
   end
 
   defp new_raffle(socket) do
-
-      %{resources: resources, members: members, members_resources: members_resources}=RaffleState.list_resources()
-
-    assign(socket,
-      resources: resources,
-      members: members,
-      members_resources: members_resources
-    )
+      %{resources: resources}=RaffleState.list_resources()
+    assign(socket, resources: resources)
   end
 
   defp schedule_tick(socket) do
@@ -38,17 +30,24 @@ defmodule WinnerWeb.WinnerResourcesLive do
   end
 
   def handle_info(:tick, socket) do
-    %{resources: resources, members: members, members_resources: members_resources}=RaffleState.list_resources()
-    socket=assign(socket, resources: resources, members_resources: members_resources)
+    %{resources: resources, member_resources: member_resources}=RaffleState.list_resources()
+
+    socket=assign(socket, resources: resources)
     new_socket = schedule_tick(socket)
     {:noreply, new_socket}
   end
 
+  #
+  # add new resource
+  #
   def handle_event("add_offer", path, socket) do
+
     new_resource=path["offer"]["next"]
+
     if not Enum.member?(socket.assigns.resources, new_resource) do
       RaffleState.add_resource(new_resource)
     end
+
     %{resources: resources}=RaffleState.list_resources()
     {:noreply, assign(socket, resources: resources)}
   end

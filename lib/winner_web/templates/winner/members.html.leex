@@ -4,7 +4,8 @@
   <h4>Which raffles do you like to join?</h4>
   <form action="#" phx-submit="add_member_resources">
     <%= for resource <- @resources do %>
-    <input type="checkbox" name="<%= resource %>" value="<%= resource %>">
+    <input type="checkbox" name="<%= resource %>" value="<%= resource %>" 
+    <%= if(Enum.member?(@curr_member_resources, resource)) do %> checked <% end %> >
     <b><font color=red><%= resource %></font></b><br>
     <% end %>
     <%= submit "Join", phx_disable_with: "Adding..." %>
@@ -21,4 +22,3 @@
   </div>
 
 <% end %>
-

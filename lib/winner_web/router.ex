@@ -18,8 +18,8 @@ defmodule WinnerWeb.Router do
   scope "/", WinnerWeb do
     pipe_through :browser
 
-    get "/", PageController, :raffle
-    get "/members", PageController, :members
+    get "/raffle", PageController, :raffle
+    get "/", PageController, :members
   end
 
   # Other scopes may use custom stacks.

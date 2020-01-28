@@ -3,7 +3,6 @@ defmodule WinnerWeb.WinnerMembersLive do
 
   alias WinnerWeb.RaffleState
 
-
   def render(assigns) do
     WinnerWeb.WinnerView.render("members.html", assigns)
   end
@@ -22,15 +21,18 @@ defmodule WinnerWeb.WinnerMembersLive do
 
   defp new_raffle(socket) do
 
-      %{resources: resources, members: members, members_resources: members_resources}=RaffleState.list_resources()
+    %{resources: resources, 
+      members: members, 
+      member_resources: member_resources
+    }=RaffleState.list_resources()
 
-    assign(socket,
-      resources: resources,
-      members: members,
-      members_resources: members_resources,
-      curr_member: "",
-      member_entered: false
-    )
+    assign(socket, 
+      resources: resources, 
+      members: members, 
+      member_resources: member_resources, 
+      curr_member: "", 
+      curr_member_resources: [], 
+      member_entered: false)
   end
 
   defp schedule_tick(socket) do
@@ -39,12 +41,15 @@ defmodule WinnerWeb.WinnerMembersLive do
   end
 
   def handle_info(:tick, socket) do
-    %{resources: resources, members_resources: members_resources}=RaffleState.list_resources()
-    socket=assign(socket, resources: resources, members_resources: members_resources) 
+    %{resources: resources, member_resources: member_resources}=RaffleState.list_resources()
+    socket=assign(socket, resources: resources) 
     new_socket = schedule_tick(socket)
     {:noreply, new_socket}
   end
 
+  #
+  # Add new member
+  #
   def handle_event("add_member", path, socket) do
     new_member=path["member"]["next"]
     if not Enum.member?(socket.assigns.resources, new_member) do
@@ -54,11 +59,12 @@ defmodule WinnerWeb.WinnerMembersLive do
     {:noreply, assign(socket, resources: resources, curr_member: new_member, member_entered: true)}
   end
 
+  #
+  # Add resouces for the member
+  #
   def handle_event("add_member_resources", path, socket) do
     RaffleState.add_member_resources(socket.assigns.curr_member, Map.keys(path))
-    %{resources: resources, members_resources: members_resources}=RaffleState.list_resources()
-    {:noreply, assign(socket, resources: resources, members_resources: members_resources)}
-    {:noreply, socket}
+    {:noreply, assign(socket, curr_member_resources: Map.keys(path))}
   end
 
   def handle_event(_, _, socket), do: {:noreply, socket}
