@@ -21,36 +21,12 @@ defmodule WinnerWeb.WinnerResourcesLive do
 
   defp new_raffle(socket) do
       %{resources: resources}=RaffleState.list_resources()
-    assign(socket, resources: resources)
+    assign(socket, resources: resources, is_match: false)
   end
 
   defp schedule_tick(socket) do
     Process.send_after(self(), :tick, 1000)
     socket
-  end
-
-  def handle_info(:tick, socket) do
-    %{
-       resources: resources, 
-       members: members,
-       member_resources: member_resources
-     } = RaffleState.list_resources()
-
-    matches =
-      for m <- resources do
-        for n <- members do
-          case Enum.member?(member_resources[n],m) do
-            true  -> n
-            false -> nil
-          end
-        end
-      end
-
-    IO.inspect matches
-
-    socket=assign(socket, resources: resources)
-    new_socket = schedule_tick(socket)
-    {:noreply, new_socket}
   end
 
   #
@@ -66,6 +42,25 @@ defmodule WinnerWeb.WinnerResourcesLive do
 
     %{resources: resources}=RaffleState.list_resources()
     {:noreply, assign(socket, resources: resources)}
+  end
+
+  #
+  # sort out resource/member combo
+  #
+  def handle_info(:tick, socket) do
+    %{
+       resources: resources, 
+       members: members,
+       member_resources: member_resources
+     } = RaffleState.list_resources()
+
+    matches=Enum.flat_map(member_resources, fn {k,v} -> Enum.map(v, &{&1,k}) end) |> Enum.group_by(fn {k,_} -> k end) |> Map.new(fn {k,vs} -> {k,Enum.map(vs, fn {_, v} -> v end)} end)
+
+	IO.inspect matches
+    socket=assign(socket, resources: resources, matches: matches, is_match: true)
+
+    new_socket = schedule_tick(socket)
+    {:noreply, new_socket}
   end
 
   def handle_event(_, _, socket), do: {:noreply, socket}

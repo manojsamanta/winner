@@ -6,7 +6,9 @@
 <%= for resource <- @resources do %>
 <p><b><font color=red><%= resource %></font></b></p>
    <%=if @is_match do %> 
-	<%= @matches[resource] %>
+	<%= for match <- @matches[resource] do %>
+		<p><%= match %></p>
+	<% end %>
    <% end %>
 <% end %>
 </div>

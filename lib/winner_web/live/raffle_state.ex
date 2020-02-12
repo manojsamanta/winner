@@ -52,14 +52,17 @@ defmodule WinnerWeb.RaffleState do
     GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
+  # Adding new resource
   def add_resource(resource_name) do
     GenServer.call(__MODULE__, {:add_resource, resource_name})
   end
 
+  # Adding new member
   def add_member(member_name) do
     GenServer.call(__MODULE__, {:add_member, member_name})
   end
 
+  # Assign member to resource
   def add_member_resources(member_name, resources) do
     GenServer.call(__MODULE__, {:add_member_resources, member_name, resources})
   end
