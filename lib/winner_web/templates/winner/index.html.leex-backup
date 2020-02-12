@@ -5,10 +5,8 @@
 </form>
 <%= for resource <- @resources do %>
 <p><b><font color=red><%= resource %></font></b></p>
-   <%=if @is_match do %> 
-	<%= for match <- @matches[resource] do %>
-		<p><%= match %></p>
-	<% end %>
+   <%= if @is_match do %> 
+	<%= @matches[resource] %>
    <% end %>
 <% end %>
 </div>
