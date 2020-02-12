@@ -54,7 +54,10 @@ defmodule WinnerWeb.WinnerResourcesLive do
        member_resources: member_resources
      } = RaffleState.list_resources()
 
-    matches=Enum.flat_map(member_resources, fn {k,v} -> Enum.map(v, &{&1,k}) end) |> Enum.group_by(fn {k,_} -> k end) |> Map.new(fn {k,vs} -> {k,Enum.map(vs, fn {_, v} -> v end)} end)
+    # contributed by @dhedlund, now replaced with invert_map
+    # matches=Enum.flat_map(member_resources, fn {k,v} -> Enum.map(v, &{&1,k}) end) |> Enum.group_by(fn {k,_} -> k end) |> Map.new(fn {k,vs} -> {k,Enum.map(vs, fn {_, v} -> v end)} end)
+
+    matches=invert_map(member_resources)
 
 	IO.inspect matches
     socket=assign(socket, resources: resources, matches: matches, is_match: true)
@@ -64,5 +67,11 @@ defmodule WinnerWeb.WinnerResourcesLive do
   end
 
   def handle_event(_, _, socket), do: {:noreply, socket}
+
+  # Contributed by @dhedlund
+  defp invert_map(map) do
+    pairs = for {key, values} <- map, value <- values, do: {key, value}
+    Enum.group_by(pairs, &elem(&1, 1), &elem(&1, 0))
+  end
 
 end
