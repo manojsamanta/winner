@@ -6,7 +6,8 @@
 <%= for resource <- @resources do %>
 <p><b><font color=red><%= resource %></font></b></p>
    <%= if @is_match do %>
-	<p>Number interested - <%= number_joined(resource, @matches) %></p>
+<table><tr><td>Number interested - <%= number_joined(resource, @matches) %></td>
+<td><button class="button button-outline">Run Auction</button></td></tr></table>
    <% end %>
 <% end %>
 </div>

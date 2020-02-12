@@ -58,8 +58,6 @@ defmodule WinnerWeb.WinnerResourcesLive do
     # matches=Enum.flat_map(member_resources, fn {k,v} -> Enum.map(v, &{&1,k}) end) |> Enum.group_by(fn {k,_} -> k end) |> Map.new(fn {k,vs} -> {k,Enum.map(vs, fn {_, v} -> v end)} end)
 
     matches=invert_map(member_resources)
-
-	IO.inspect matches
     socket=assign(socket, resources: resources, matches: matches, is_match: true)
 
     new_socket = schedule_tick(socket)
