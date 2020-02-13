@@ -20,8 +20,8 @@ defmodule WinnerWeb.WinnerResourcesLive do
   end
 
   defp new_raffle(socket) do
-      %{resources: resources}=RaffleState.list_resources()
-    assign(socket, resources: resources, is_match: false)
+    %{resources: resources}=RaffleState.list_resources()
+    assign(socket, resources: resources, shuffles: %{}, is_match: false)
   end
 
   defp schedule_tick(socket) do
@@ -62,6 +62,18 @@ defmodule WinnerWeb.WinnerResourcesLive do
 
     new_socket = schedule_tick(socket)
     {:noreply, new_socket}
+  end
+
+  def handle_event("auction", path, socket) do
+    resource=path["resource"]
+    shuffles = socket.assigns.shuffles
+
+    case socket.assigns.matches[resource] do
+     nil -> {:noreply, socket}
+     _   -> curr = socket.assigns.matches[resource] |> Enum.shuffle
+            shuffles= Map.put(shuffles, resource, curr)
+            {:noreply, assign(socket, shuffles: shuffles)}
+    end
   end
 
   def handle_event(_, _, socket), do: {:noreply, socket}

@@ -7,4 +7,12 @@ defmodule WinnerWeb.WinnerView do
     _   -> Enum.count(map[resource])
    end
   end
+
+  def auction_done(resource, shuffles) do
+    case shuffles[resource] do
+      nil -> false
+      _   -> true 
+    end
+  end
+ 
 end

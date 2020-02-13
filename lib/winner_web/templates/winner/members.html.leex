@@ -1,7 +1,7 @@
 <%=if @member_entered do %>
 
   <div class="header">
-  <h4>Which raffles do you like to join?</h4>
+  <h4><%= @curr_member %>, which raffles do you like to join?</h4>
   <form action="#" phx-submit="add_member_resources">
     <%= for resource <- @resources do %>
     <input type="checkbox" name="<%= resource %>" value="<%= resource %>" 

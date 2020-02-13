@@ -7,7 +7,17 @@
 <p><b><font color=red><%= resource %></font></b></p>
    <%= if @is_match do %>
 <table><tr><td>Number interested - <%= number_joined(resource, @matches) %></td>
-<td><button class="button button-outline">Run Auction</button></td></tr></table>
+<td>
+<%=if auction_done(resource, @shuffles) do %>
+<p><b><font color=red>Winners</font></b></p>
+<%= for name <- @shuffles[resource] do %>
+  <p><%= name %></p>
+<% end %> 
+<% else %>
+<button class="button button-outline" phx-click="auction" phx-value-resource="<%= resource %>">Run Auction</button>
+<% end %>
+</td>
+</tr></table>
    <% end %>
 <% end %>
 </div>
